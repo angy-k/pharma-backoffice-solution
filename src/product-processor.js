@@ -39,27 +39,12 @@ class ProductProcessor {
     };
   }
 
-  // BROKEN: Sequential processing with delays - very slow!
   async processBatch(products) {
-    console.log(`Starting batch processing of ${products.length} products...`);
-    const results = [];
+    console.log(`Starting optimized batch processing of ${products.length} products...`);
     const startTime = Date.now();
-    
-    // BROKEN: Process one by one instead of parallel
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      
-      console.log(`Processing ${i + 1}/${products.length}: ${product?.name || 'Unknown'}`);
-      
-      // BROKEN: Await each one (blocking)
-      const result = await this.processSubmission(product);
-      results.push(result);
-      
-      // BROKEN: Unnecessary delay between each item
-      if (i < products.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    }
+
+    // Replaced sequential processing with parallel processing to fix performance issue
+    const results = await this.processBatchParallel(products, 5);
     
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
